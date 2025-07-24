@@ -85,3 +85,45 @@ sequenceDiagram
         PrepWiseFrontend-->>User: You hear AI, see live transcript
     end
 ```
+
+
+#### 3. Client-Side vs. Server-Side
+
+PrepWise uses both your web browser (client-side) and its own powerful servers (server-side) to handle authentication and sessions.
+
+| Feature               | Client-Side (Your Browser)                                  | Server-Side (PrepWise Servers)                                       |
+| :-------------------- | :---------------------------------------------------------- | :------------------------------------------------------------------- |
+| **Role**              | Handles direct interaction with Firebase Authentication.    | Manages secure sessions, interacts with Firebase Admin SDK, database. |
+| **Authentication**    | Sends email/password to Firebase.                           | Verifies Firebase ID Tokens, creates session cookies.                |
+| **Session**           | Stores the session cookie securely.                         | Validates the session cookie to keep you logged in.                  |
+| **Security Focus**    | Basic user interaction, gets temporary tokens.              | High-level security, permanent session management, database access.  |
+
+
+
+Let's trace what happens when you sign in and then navigate to another page:
+
+```mermaid
+sequenceDiagram
+    participant User as Your Browser
+    participant AuthForm as AuthForm.tsx
+    participant FirebaseClient as Firebase Auth (Client SDK)
+    participant PrepWiseServer as PrepWise Server (auth.action.ts)
+    participant FirebaseAdmin as Firebase Admin SDK
+    participant Database as PrepWise User DB (Firestore)
+
+    User->>AuthForm: Enters Email/Password and Clicks Sign In
+    AuthForm->>FirebaseClient: signInWithEmailAndPassword(email, password)
+    FirebaseClient-->>AuthForm: Success! User Credential + Short-lived ID Token
+    AuthForm->>PrepWiseServer: Call signIn action with ID Token
+    PrepWiseServer->>FirebaseAdmin: Verify ID Token, create Session Cookie
+    FirebaseAdmin-->>PrepWiseServer: Session Cookie (securely generated)
+    PrepWiseServer-->>User: Set Session Cookie in browser
+    Note over User: User now has the "special wristband" (session cookie)
+
+    User->>PrepWiseServer: Requests a new page (e.g., "/" dashboard)
+    PrepWiseServer->>FirebaseAdmin: Check Session Cookie validity (verifySessionCookie)
+    FirebaseAdmin-->>PrepWiseServer: Session Cookie is valid! Decoded User ID
+    PrepWiseServer->>Database: Look up user details using User ID
+    Database-->>PrepWiseServer: User Profile Data
+    PrepWiseServer-->>User: Render the requested page (User is logged in!)
+```
