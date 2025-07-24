@@ -59,3 +59,29 @@ Zod
 👉 Responsiveness: Fully responsive design that works seamlessly across devices.
 
 and many more, including code architecture and reusability
+
+### Under the Hood: The Real-time Voice Loop
+
+Let's visualize the core process of how Vapi enables this real-time voice conversation:
+
+```mermaid
+sequenceDiagram
+    participant User as Your Browser (You)
+    participant PrepWiseFrontend as PrepWise Frontend
+    participant VapiSDK as Vapi Web SDK
+    participant VapiCloud as Vapi Cloud Service
+    participant AIModel as Vapi's AI Model
+
+    Note over User, AIModel: Real-time Voice Interview Starts
+
+    loop Conversation Turns
+        User->>PrepWiseFrontend: Speak into microphone (your audio)
+        PrepWiseFrontend->>VapiSDK: Sends your audio
+        VapiSDK->>VapiCloud: Streams your audio for Speech-to-Text (STT)
+        VapiCloud->>AIModel: Sends your voice's text transcript
+        AIModel-->>VapiCloud: AI's textual response
+        VapiCloud->>VapiSDK: Sends AI's audio (Text-to-Speech) and transcript
+        VapiSDK->>PrepWiseFrontend: Plays AI audio, provides transcript
+        PrepWiseFrontend-->>User: You hear AI, see live transcript
+    end
+```
