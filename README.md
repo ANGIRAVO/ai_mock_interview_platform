@@ -6,6 +6,34 @@ Built with Next.js for the user interface and backend logic, Firebase for authen
 If you're getting started and need assistance or face any bugs, join our active Discord community with over 50k+ members. It's a place where people help each other out.
 
 
+Prepwise is an innovative platform designed to help users prepare for job interviews. It leverages **AI Voice Agents** from Vapi to conduct *real-time conversational mock interviews*. After the interview, it uses **Google Gemini** to *generate personalized feedback*, offering detailed insights into performance. All user data, interview details, and feedback reports are *securely stored* using **Firebase**, while a consistent and modern look is maintained through a system of **reusable UI components** and **Tailwind CSS styling**.
+
+
+## Visual Overview
+
+```mermaid
+flowchart TD
+    A0["User Authentication & Session Management
+"]
+    A1["AI Voice Agent (Vapi Integration)
+"]
+    A2["Interview & Feedback Generation
+"]
+    A3["Firebase Data Storage
+"]
+    A4["Reusable UI Components & Styling
+"]
+    A0 -- "Persists user data" --> A3
+    A0 -- "Renders authentication UI" --> A4
+    A1 -- "Triggers feedback generation" --> A2
+    A1 -- "Displays agent interface" --> A4
+    A2 -- "Provides interview questions" --> A1
+    A2 -- "Stores interview & feedback" --> A3
+    A3 -- "Authenticates users" --> A0
+    A3 -- "Provides interview data" --> A2
+    A4 -- "Displays interview results" --> A2
+```
+
 
 ⚙️ Tech Stack
 Next.js
